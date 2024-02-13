@@ -1,0 +1,16 @@
+{
+  "name": "streamify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:backend": "cd backend && node server.js",
+    "start:frontend": "cd frontend && npm start",
+    "start": "npm-run-all --parallel start:backend start:frontend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
