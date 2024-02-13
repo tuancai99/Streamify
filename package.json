@@ -6,7 +6,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:backend": "cd backend && node server.js",
+    "start:backend": "cd backend && nodemon server.js",
     "start:frontend": "cd frontend && npm start",
     "start": "npm-run-all --parallel start:backend start:frontend"
   },
