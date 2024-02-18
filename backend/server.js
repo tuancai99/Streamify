@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
 
+app.use(express.json());
 app.use("/", require("./routes/testingRoutes"));
+app.use("/users", require("./routes/userRoutes"));
 
 const PORT = process.env.PORT || 5001;
 
