@@ -19,16 +19,27 @@ const getAllUsers = asyncHandler(async (req, res) => {
 // @route POST /users
 // @access Private
 const createNewUser = asyncHandler(async (req, res) => {
-	const { email, username, nameFirst, nameLast, password } = req.body;
+	const { email, nameFirst, nameLast, password } = req.body;
 
-	if (!email || !username || !nameFirst || !nameLast || !password) {
-		return res.status(400).json({ message: "All fields are required." });
+	if (!email) {
+		return res.status(400).json({ message: "Email required." });
+	} else if (!nameFirst || !nameLast) {
+		return res
+			.status(400)
+			.json({ message: "First name and last name required." });
+	} else if (!password) {
+		return res.status(400).json({ message: "Password required." });
 	}
+
+	const username =
+		req.body.username === undefined
+			? email.slice(0, email.indexOf("@"))
+			: req.body.username;
 
 	const duplicateEmail = await User.findOne({ email }).lean().exec();
 
 	if (duplicateEmail) {
-		return res.status(409).json({ message: "Email is already in use." });
+		return res.status(409).json({ message: "Email already in use." });
 	}
 
 	const duplicateUsername = await User.findOne({ username }).lean().exec();
@@ -98,7 +109,7 @@ const updateUser = asyncHandler(async (req, res) => {
 	const duplicateEmail = await User.findOne({ email }).lean().exec();
 
 	if (duplicateEmail && duplicateEmail?._id.toString() !== id) {
-		return res.status(409).json({ message: "Email is already in use." });
+		return res.status(409).json({ message: "Email already in use." });
 	}
 
 	const duplicateUsername = await User.findOne({ username }).lean().exec();
