@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema({
 	username: {
 		type: String,
 		unique: true,
-		required: true,
 	},
 	name: {
 		first: {
@@ -36,6 +35,10 @@ const userSchema = new mongoose.Schema({
 	active: {
 		type: Boolean,
 		default: true,
+	},
+	googleId: {
+		type: String,
+		default: "",
 	},
 });
 
