@@ -28,9 +28,7 @@ app.use("/", require("./routes/authRoutes"));
 const PORT = process.env.PORT || 5001;
 
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
+
 
 connectDB();
 
