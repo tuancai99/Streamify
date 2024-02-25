@@ -1,6 +1,10 @@
-<<<<<<< HEAD
+require('dotenv').config()
 const express = require("express");
 const router = express.Router();
+const passport = require('passport');
+require('../config/passport');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const authController = require("../controllers/authController");
 const loginLimiter = require("../middleware/loginLimiter");
 
@@ -11,15 +15,6 @@ router.route("/refresh").get(authController.refresh);
 router.route("/logout").post(authController.logout);
 
 module.exports = router;
-=======
-require('dotenv').config()
-const express = require("express");
-const router = express.Router();
-const passport = require('passport');
-require('../config/passport');
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-
 
 //This redirects to google authentication using passport.
 router.get('/auth/google',
@@ -51,4 +46,3 @@ router.get('/logout', function(req, res, next) {
   
 
 module.exports = router;
->>>>>>> 6ffd3f85497ac4f1272e7ee6206677d8086c7bd6
