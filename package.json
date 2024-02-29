@@ -8,7 +8,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:backend": "cd backend && nodemon server.js",
     "start:frontend": "cd frontend && npm start",
-    "start": "npm-run-all --parallel start:backend start:frontend"
+    "start": "npm-run-all --parallel start:backend start:frontend",
+    "install:backend": "cd backend && yarn install",
+    "install:frontend": "cd frontend && yarn install",
+    "install": "npm-run-all --parallel install:backend install:frontend"
   },
   "keywords": [],
   "author": "",
