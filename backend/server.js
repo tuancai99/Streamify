@@ -8,6 +8,8 @@ const corsOptions = require("./config/corsOptions");
 const connectDB = require("./config/dbConn");
 const mongoose = require("mongoose");
 const PORT = process.env.PORT || 5001;
+const session = require("express-session");
+const passport = require("passport");
 
 connectDB();
 
@@ -22,6 +24,18 @@ app.use("/", express.static(path.join(__dirname, "public")));
 app.use("/", require("./routes/testingRoutes"));
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/users", require("./routes/userRoutes"));
+
+app.use(
+	session({
+		secret: "secret",
+		resave: false,
+		saveUninitialized: true,
+		cookie: { secure: false }, // set to true if using https
+	})
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 mongoose.connection.once("open", () => {
 	console.log("Connected to MongoDB");
