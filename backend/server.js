@@ -9,6 +9,11 @@ const path = require('path');
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
+<<<<<<< HEAD
+=======
+const connectDB = require("./config/dbConn");
+const mongoose = require("mongoose");
+>>>>>>> 8794a0b (New Changes Made)
 
 app.use(express.static(path.join(__dirname, 'public')));
 
