@@ -13,6 +13,7 @@ import Divider from "@mui/material/Divider";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 
+
 const Root = styled("div")(({ theme }) => ({
   width: "100%",
   ...theme.typography.body2,
@@ -28,6 +29,15 @@ const SignIn = () => {
   const toSignUp = () => {
     navigate("/signup");
   };
+
+  const SignIn = () => {
+    navigate("/signin/auth");
+  };
+
+  const GoogleAuth = () => {
+    window.location.href = 'http://localhost:5001/auth/google';
+  }
+
   return (
     <Grid
       container
@@ -72,6 +82,7 @@ const SignIn = () => {
                 variant="contained"
                 style={{ backgroundColor: "#26E5B7", color: "#2D2C2F" }}
                 fullWidth
+                onClick={SignIn}
               >
                 Sign In
               </Button>
@@ -82,6 +93,7 @@ const SignIn = () => {
                 variant="contained"
                 style={{ backgroundColor: "#22201E" }}
                 fullWidth
+                onClick={GoogleAuth}
               >
                 Sign In With Google
               </Button>

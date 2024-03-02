@@ -5,6 +5,14 @@ const passport = require('passport');
 require('../config/passport');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const loginLimiter = require('../middleware/loginLimiter');
+
+router.route('/')
+    .post(loginLimiter, )
+
+router.route('/refresh')
+    .get()
+
 
 
 //This redirects to google authentication using passport.
