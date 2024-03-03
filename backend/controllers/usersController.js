@@ -9,7 +9,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 	const users = await User.find().select("-password").lean();
 
 	if (!users?.length) {
-		return res.status(400).json({ message: "No users found." });
+		return res.status(400).json({ message: "No users found" });
 	}
 
 	res.json(users);
@@ -22,30 +22,28 @@ const createNewUser = asyncHandler(async (req, res) => {
 	const { email, nameFirst, nameLast, password } = req.body;
 
 	if (!email) {
-		return res.status(400).json({ message: "Email required." });
+		return res.status(400).json({ message: "Email required" });
 	} else if (!nameFirst || !nameLast) {
 		return res
 			.status(400)
-			.json({ message: "First name and last name required." });
+			.json({ message: "First name and last name required" });
 	} else if (!password) {
-		return res.status(400).json({ message: "Password required." });
+		return res.status(400).json({ message: "Password required" });
 	}
 
 	const username =
-		req.body.username === undefined
-			? email.slice(0, email.indexOf("@"))
-			: req.body.username;
+		req.body.username === undefined ? email.split("@")[0] : req.body.username;
 
 	const duplicateEmail = await User.findOne({ email }).lean().exec();
 
 	if (duplicateEmail) {
-		return res.status(409).json({ message: "Email already in use." });
+		return res.status(409).json({ message: "Email already in use" });
 	}
 
 	const duplicateUsername = await User.findOne({ username }).lean().exec();
 
 	if (duplicateUsername) {
-		return res.status(409).json({ message: "Username already exists." });
+		return res.status(409).json({ message: "Username already exists" });
 	}
 
 	const hashedPassword = await bcrypt.hash(password, 10);
@@ -65,7 +63,7 @@ const createNewUser = asyncHandler(async (req, res) => {
 	if (user) {
 		res.status(201).json({ message: `New user ${username} created.` });
 	} else {
-		res.status(400).json({ message: "Invalid user data received." });
+		res.status(400).json({ message: "Invalid user data received" });
 	}
 });
 
@@ -97,25 +95,25 @@ const updateUser = asyncHandler(async (req, res) => {
 	) {
 		return res
 			.status(400)
-			.json({ message: "All fields except password are required." });
+			.json({ message: "All fields except password are required" });
 	}
 
 	const user = await User.findById(id).exec();
 
 	if (!user) {
-		return res.status(400).json({ message: "User not found." });
+		return res.status(400).json({ message: "User not found" });
 	}
 
 	const duplicateEmail = await User.findOne({ email }).lean().exec();
 
 	if (duplicateEmail && duplicateEmail?._id.toString() !== id) {
-		return res.status(409).json({ message: "Email already in use." });
+		return res.status(409).json({ message: "Email already in use" });
 	}
 
 	const duplicateUsername = await User.findOne({ username }).lean().exec();
 
 	if (duplicateUsername && duplicateUsername?._id.toString() !== id) {
-		return res.status(409).json({ message: "Username already exists." });
+		return res.status(409).json({ message: "Username already exists" });
 	}
 
 	user.email = email;
