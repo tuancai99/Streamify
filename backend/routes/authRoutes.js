@@ -13,15 +13,17 @@ router.route("/refresh").get(authController.refresh);
 
 router.route("/logout").post(authController.logout);
 
+router.route('/signup').post(authController.signUp);
+
 //This redirects to google authentication using passport.
 router.get(
-	"/auth/google",
+	"/google",
 	passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
 //This is the route for the auth callback. If the google auth was successful, then it can redirect to another page.
 router.get(
-	"/auth/google/callback",
+	"/google/callback",
 	passport.authenticate("google", { failureRedirect: "/login" }),
 	(req, res) => {
 		// Successful authentication, redirect home or to another page

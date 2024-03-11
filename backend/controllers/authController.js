@@ -15,42 +15,51 @@ const login = asyncHandler(async (req, res) => {
 
 	const foundUser = await User.findOne({ email }).lean().exec();
 
+
 	if (!foundUser || !foundUser.active) {
 		return res.status(401).json({ message: "Unauthorized" });
 	}
 
-	const match = await bcrypt.compare(password, foundUser.password);
+	if (foundUser.googleId && foundUser.googleId.length > 0) {
+		//we need to prompt the user to use sign in with google
+		console.log('Google user attempted to sign in username and password.');
+	  } else {
+		const match = await bcrypt.compare(password, foundUser.password);
 
-	if (!match) {
-		return res.status(401).json({ message: "Unauthorized" });
-	}
+		if (!match) {
+			return res.status(401).json({ message: "Unauthorized" });
+		}
 
-	const accessToken = jwt.sign(
-		{
-			UserInfo: {
-				email: foundUser.email,
-				admin: foundUser.admin,
+		const accessToken = jwt.sign(
+			{
+				UserInfo: {
+					email: foundUser.email,
+					admin: foundUser.admin,
+				},
 			},
-		},
-		process.env.ACCESS_TOKEN_SECRET,
-		{ expiresIn: "1m" }
-	);
+			process.env.ACCESS_TOKEN_SECRET,
+			{ expiresIn: "1m" }
+		);
 
-	const refreshToken = jwt.sign(
-		{ email: foundUser.email },
-		process.env.REFRESH_TOKEN_SECRET,
-		{ expiresIn: "1d" }
-	);
+		const refreshToken = jwt.sign(
+			{ email: foundUser.email },
+			process.env.REFRESH_TOKEN_SECRET,
+			{ expiresIn: "1d" }
+		);
 
-	// Create secure cookie with refresh token
-	res.cookie("jwt", refreshToken, {
-		httpOnly: true, //accessible only by web server
-		secure: true, //https
-		sameSite: "None", //cross-site cookie
-		maxAge: 7 * 24 * 60 * 60 * 1000, //cookie expiry: set to match rT
-	});
+		// Create secure cookie with refresh token
+		res.cookie("jwt", refreshToken, {
+			httpOnly: true, //accessible only by web server
+			secure: true, //https
+			sameSite: "None", //cross-site cookie
+			maxAge: 7 * 24 * 60 * 60 * 1000, //cookie expiry: set to match rT
+		});
 
-	res.json({ accessToken });
+		res.json({ accessToken });
+	  }
+	  
+
+	
 });
 
 // @desc Refresh
@@ -104,4 +113,9 @@ const logout = (req, res) => {
 	res.json({ message: "Cookie cleared" });
 };
 
-module.exports = { login, refresh, logout };
+const signUp = asyncHandler(async (req, res) => {
+	//this will add the user to the database?
+	console.log('Im signing the user up!');
+});
+
+module.exports = { login, refresh, logout, signUp };

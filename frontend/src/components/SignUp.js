@@ -26,6 +26,10 @@ const SignUp = () => {
   const ToSignIn = () => {
     navigate("/signin");
   };
+
+  const SignUp = () => {
+    window.location.herf = "http://localhost:5001/auth/signup";
+  }
   return (
     <Grid
       container

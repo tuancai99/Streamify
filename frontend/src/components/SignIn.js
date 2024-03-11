@@ -31,7 +31,8 @@ const SignIn = () => {
   };
 
   const SignIn = () => {
-    navigate("/signin/auth");
+    console.log(window.location.herf = 'http://localhost:5001/auth');
+    
   };
 
   const GoogleAuth = () => {

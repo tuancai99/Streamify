@@ -13,6 +13,7 @@ const passport = require("passport");
 
 connectDB();
 
+
 app.use(cors(corsOptions));
 
 app.use(express.json());
@@ -20,10 +21,6 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/", express.static(path.join(__dirname, "public")));
-
-app.use("/", require("./routes/testingRoutes"));
-app.use("/auth", require("./routes/authRoutes"));
-app.use("/users", require("./routes/userRoutes"));
 
 app.use(
 	session({
@@ -36,6 +33,12 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+app.use("/", require("./routes/testingRoutes"));
+app.use("/auth", require("./routes/authRoutes"));
+app.use("/users", require("./routes/userRoutes"));
+
 
 mongoose.connection.once("open", () => {
 	console.log("Connected to MongoDB");
