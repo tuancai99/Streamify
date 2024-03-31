@@ -13,8 +13,6 @@ router.route("/refresh").get(authController.refresh);
 
 router.route("/logout").post(authController.logout);
 
-router.route('/signup').post(authController.signUp);
-
 //This redirects to google authentication using passport.
 router.get(
 	"/google",

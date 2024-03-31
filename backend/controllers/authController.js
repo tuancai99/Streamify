@@ -2,6 +2,7 @@ const User = require("../models/User");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+require('dotenv').config()
 
 // @desc Login
 // @route POST /auth
@@ -17,16 +18,21 @@ const login = asyncHandler(async (req, res) => {
 
 
 	if (!foundUser || !foundUser.active) {
+		//console.log('Did not find a user.');
 		return res.status(401).json({ message: "Unauthorized" });
 	}
 
-	if (foundUser.googleId && foundUser.googleId.length > 0) {
+
+	const regExp = /[a-zA-Z]/g;
+	if (!regExp.test(foundUser.googleId)) { // THIS IS BAD HAVE TO FIX but it works for now
+		
 		//we need to prompt the user to use sign in with google
-		console.log('Google user attempted to sign in username and password.');
+		console.log('Google user attempted to sign in username and password: %f', foundUser.googleId);
 	  } else {
 		const match = await bcrypt.compare(password, foundUser.password);
 
 		if (!match) {
+			//console.log('Passwords do not match.');
 			return res.status(401).json({ message: "Unauthorized" });
 		}
 
@@ -57,9 +63,7 @@ const login = asyncHandler(async (req, res) => {
 
 		res.json({ accessToken });
 	  }
-	  
 
-	
 });
 
 // @desc Refresh
@@ -113,9 +117,4 @@ const logout = (req, res) => {
 	res.json({ message: "Cookie cleared" });
 };
 
-const signUp = asyncHandler(async (req, res) => {
-	//this will add the user to the database?
-	console.log('Im signing the user up!');
-});
-
-module.exports = { login, refresh, logout, signUp };
+module.exports = { login, refresh, logout };

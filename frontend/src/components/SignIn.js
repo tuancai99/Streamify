@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/TestComponent.css";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -25,19 +25,47 @@ const Root = styled("div")(({ theme }) => ({
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const toSignUp = () => {
     navigate("/signup");
   };
 
-  const SignIn = () => {
-    console.log(window.location.herf = 'http://localhost:5001/auth');
+  const SignIn = async () => {
+   
+    try {
+      const response = await fetch('http://localhost:5001/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        console.log('Login successful');
+        navigate('/home');
+      } else {
+        console.log('Login failed');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+    }
     
   };
 
   const GoogleAuth = () => {
     window.location.href = 'http://localhost:5001/auth/google';
   }
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
 
   return (
     <Grid
@@ -65,18 +93,23 @@ const SignIn = () => {
               >
                 Let's Sign In
               </Typography>
+              
 
               <TextField
                 id="email"
                 label="Enter E-mail"
                 variant="outlined"
                 fullWidth
+                value={email}
+                onChange={handleEmailChange}
               />
               <TextField
                 id="password"
                 label="Enter Password"
                 variant="outlined"
                 fullWidth
+                value={password}
+                onChange={handlePasswordChange}
               />
 
               <Button

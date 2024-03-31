@@ -19,6 +19,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 // @route POST /users
 // @access Private
 const createNewUser = asyncHandler(async (req, res) => {
+	console.log('this function is working.');
 	const { email, nameFirst, nameLast, password } = req.body;
 
 	if (!email) {
@@ -56,6 +57,7 @@ const createNewUser = asyncHandler(async (req, res) => {
 			last: nameLast,
 		},
 		password: hashedPassword,
+		googleId: (Math.random() + 1).toString(36).substring(7) //This is not a good soultion. We should make the googleId not unique.
 	};
 
 	const user = await User.create(userObject);
