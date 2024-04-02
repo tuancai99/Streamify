@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/TestComponent.css";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -23,9 +23,63 @@ const Root = styled("div")(({ theme }) => ({
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
   const ToSignIn = () => {
     navigate("/signin");
   };
+
+  const SignUp = async () => {
+    const nameFirst = firstName;
+    const nameLast = lastName;
+
+    try {
+      const response = await fetch('http://localhost:5001/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, nameFirst, nameLast, password}),
+      });
+
+      if (response.ok) {
+        console.log('SignUp successful');
+        navigate('/home');
+      } else {
+        console.log('SignUp failed');
+      }
+    } catch (error) {
+      console.error('Error during SignUp:', error);
+    }
+    
+  };
+
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handleFirstNameChange = (event) => {
+    setFirstName(event.target.value);
+  }
+
+  const handleLastNameChange = (event) => {
+    setLastName(event.target.value);
+  }
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handleConfirmPasswordChange = (event) => {
+    setConfirmPassword(event.target.value);
+  };
+
+
   return (
     <Grid
       container
@@ -58,6 +112,8 @@ const SignUp = () => {
                 label="Enter E-mail"
                 variant="outlined"
                 fullWidth
+                value={email}
+                onChange={handleEmailChange}
               />
               <Stack direction="row" gap={1}>
                 <TextField
@@ -65,12 +121,16 @@ const SignUp = () => {
                   label="Enter First Name"
                   variant="outlined"
                   fullWidth
+                  value={firstName}
+                  onChange={handleFirstNameChange}
                 />
                 <TextField
                   id="last-name"
                   label="Enter Last Name"
                   variant="outlined"
                   fullWidth
+                  value={lastName}
+                  onChange={handleLastNameChange}
                 />
               </Stack>
               <TextField
@@ -78,12 +138,16 @@ const SignUp = () => {
                 label="Enter Password"
                 variant="outlined"
                 fullWidth
+                value={password}
+                onChange={handlePasswordChange}
               />
               <TextField
                 id="password-confirm"
                 label="Re-Enter Password"
                 variant="outlined"
                 fullWidth
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
               />
 
               <Root>
@@ -93,6 +157,7 @@ const SignUp = () => {
                 variant="contained"
                 style={{ backgroundColor: "#26E5B7", color: "#2D2C2F" }}
                 fullWidth
+                onClick={SignUp}
               >
                 Sign Up
               </Button>

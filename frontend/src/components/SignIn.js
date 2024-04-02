@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/TestComponent.css";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -13,6 +13,7 @@ import Divider from "@mui/material/Divider";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 
+
 const Root = styled("div")(({ theme }) => ({
   width: "100%",
   ...theme.typography.body2,
@@ -24,10 +25,48 @@ const Root = styled("div")(({ theme }) => ({
 
 const SignIn = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const toSignUp = () => {
     navigate("/signup");
   };
+
+  const SignIn = async () => {
+   
+    try {
+      const response = await fetch('http://localhost:5001/auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        console.log('Login successful');
+        navigate('/home');
+      } else {
+        console.log('Login failed');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+    }
+    
+  };
+
+  const GoogleAuth = () => {
+    window.location.href = 'http://localhost:5001/auth/google';
+  }
+
+  const handleEmailChange = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
   return (
     <Grid
       container
@@ -54,24 +93,30 @@ const SignIn = () => {
               >
                 Let's Sign In
               </Typography>
+              
 
               <TextField
                 id="email"
                 label="Enter E-mail"
                 variant="outlined"
                 fullWidth
+                value={email}
+                onChange={handleEmailChange}
               />
               <TextField
                 id="password"
                 label="Enter Password"
                 variant="outlined"
                 fullWidth
+                value={password}
+                onChange={handlePasswordChange}
               />
 
               <Button
                 variant="contained"
                 style={{ backgroundColor: "#26E5B7", color: "#2D2C2F" }}
                 fullWidth
+                onClick={SignIn}
               >
                 Sign In
               </Button>
@@ -82,6 +127,7 @@ const SignIn = () => {
                 variant="contained"
                 style={{ backgroundColor: "#22201E" }}
                 fullWidth
+                onClick={GoogleAuth}
               >
                 Sign In With Google
               </Button>
