@@ -7,7 +7,6 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const authController = require("../controllers/authController");
 const loginLimiter = require("../middleware/loginLimiter");
-const bcrypt = require("bcrypt");
 
 router.route("/").post(loginLimiter, authController.login);
 
