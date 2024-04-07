@@ -15,6 +15,12 @@ const conversationSchema = new mongoose.Schema(
 				default: [],
 			},
 		],
+		type: {
+			type: String,
+			enum: ["two", "multiple"],
+			required: true,
+			default: "two",
+		},
 	},
 	{ timestamps: true }
 );
