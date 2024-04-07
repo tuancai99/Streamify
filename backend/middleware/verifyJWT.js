@@ -9,13 +9,15 @@ const verifyJWT = (req, res, next) => {
 
 	const token = authHeader.split(" ")[1];
 
+	console.log("Auth Header:", authHeader);
 	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
 		if (err) {
+			console.log("JWT Verification Error:", err.message);
 			return res.status(403).json({ message: "Forbidden" });
 		}
 
-		req.email = decoded.UserInfo.email;
-		req.admin = decoded.UserInfo.admin;
+		console.log("Decoded JWT:", decoded);
+		req.user = decoded.UserInfo;
 		next();
 	});
 };
