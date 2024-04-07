@@ -1,69 +1,56 @@
 const Message = require("../models/Message");
 const Conversation = require("../models/Conversation");
 const asyncHandler = require("express-async-handler");
-const { getReceiverSocketId, io } = require("../server");
+const { getReceiverSocketId, io } = require("../socket/socket");
 
+// @desc Create and send a message
+// @route POST /messages
+// @access Private
 const sendMessage = asyncHandler(async (req, res) => {
-	try {
-		const { message } = req.body;
-		const { id: receiverId } = req.params;
-		const senderId = req.user._id;
+	const { message, conversationId } = req.body;
+	const senderId = req.user._id;
 
-		let conversation = await Conversation.findOne({
-			participants: { $all: [senderId, receiverId] },
-		});
+	const conversation = await Conversation.findById(conversationId);
+	if (!conversation) {
+		return res.status(404).json({ message: "Conversation not found." });
+	}
+	if (!conversation.participants.includes(senderId)) {
+		return res
+			.status(403)
+			.json({ message: "Sender is not a participant of the conversation." });
+	}
 
-		if (!conversation) {
-			conversation = await Conversation.create({
-				participants: [senderId, receiverId],
-			});
-		}
+	const newMessage = new Message({
+		senderId,
+		conversationId,
+		message,
+	});
+	await newMessage.save();
 
-		const newMessage = new Message({
-			senderId,
-			receiverId,
-			message,
-		});
+	conversation.messages.push(newMessage._id);
+	await conversation.save();
 
-		if (newMessage) {
-			conversation.messages.push(newMessage._id);
-		}
-
-		await Promise.all([conversation.save(), newMessage.save()]);
-
-		const receiverSocketId = getReceiverSocketId(receiverId);
-
+	conversation.participants.forEach((participantId) => {
+		const receiverSocketId = getReceiverSocketId(participantId.toString());
 		if (receiverSocketId) {
 			io.to(receiverSocketId).emit("newMessage", newMessage);
 		}
+	});
 
-		res.status(201).json(newMessage);
-	} catch (error) {
-		console.log("Error in sendMessage controller: ", error.message);
-		res.status(500).json({ error: "Internal server error" });
-	}
+	res.status(201).json(newMessage);
 });
 
 const getMessages = asyncHandler(async (req, res) => {
-	try {
-		const { id: userToChatId } = req.params;
-		const senderId = req.user._id;
+	const { conversationId } = req.params;
 
-		const conversation = await Conversation.findOne({
-			participants: { $all: [senderId, userToChatId] },
-		}).populate("messages");
-
-		if (!conversation) {
-			return res.status(200).json([]);
-		}
-
-		const messages = conversation.messages;
-
-		res.status(200).json(messages);
-	} catch (error) {
-		console.log("Error in getMessages controller: ", error.message);
-		res.status(500).json({ error: "Internal server error" });
+	const conversation = await Conversation.findById(conversationId).populate(
+		"messages"
+	);
+	if (!conversation) {
+		return res.status(404).json({ message: "Conversation not found." });
 	}
+
+	res.json(conversation.messages);
 });
 
 module.exports = { sendMessage, getMessages };
